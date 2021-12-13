@@ -8,7 +8,7 @@ public class DBConnectionClass {
     public Connection getConnection() {
         String dbName = "travel_reservation_service";
         String dbEmail = "root";
-        String dbPassword = "Bitswiz1297!";
+        String dbPassword = "iloveBrownie2001";
         String url = "jdbc:mysql://localhost:3306/" + dbName;
 
         try {

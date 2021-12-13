@@ -22,7 +22,7 @@ public class LoginController {
     @FXML
     private TextField passwordTextField, emailTextField;
 
-    private String emailText;
+    private static String emailText;
     private String passwordText;
 
     @FXML
@@ -40,9 +40,18 @@ public class LoginController {
                 Stage stage = (Stage) loginButton.getScene().getWindow();
                 stage.setScene(new Scene(root));
             }
+            if (validateAccount() && validateOwner()) {
+                // load home screen
+                Parent root = FXMLLoader.load(getClass().getResource("../fxml/ownerhomescreen.fxml"));
+                Stage stage = (Stage) loginButton.getScene().getWindow();
+                stage.setScene(new Scene(root));
+            }
         }
 
+    }
 
+    public static String getEmailText() {
+        return emailText;
     }
 
     @FXML
@@ -110,4 +119,27 @@ public class LoginController {
 
     // validate customer
     // validate owner
+    public boolean validateOwner() {
+        // connect to DB
+        DBConnectionClass connectNow = new DBConnectionClass();
+        Connection connectDB = connectNow.getConnection();
+
+        String verifyLogin = String.format("select count(*) from owners where Email like '%s';", emailText);
+
+        try {
+            Statement statement = connectDB.createStatement();
+            ResultSet queryResult = statement.executeQuery(verifyLogin);
+
+            while (queryResult.next()) {
+                if (queryResult.getInt(1) == 1) {   // 1 unique user
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return false;
+    }
 }
